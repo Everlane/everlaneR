@@ -51,7 +51,7 @@
       # key is character before '=', value is character after '='
       redshift_creds[[substr(line, 1, regexpr('=', line)[1]- 1)]] <- substr(line, regexpr('=', line)[1] + 1, nchar(line))
     }
-    close(redshift_creds)
+    close(redshift_creds_file)
     return(redshift_creds)
   }
 
