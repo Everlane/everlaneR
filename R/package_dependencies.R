@@ -7,6 +7,8 @@
 # function for quickly checking if package is already installed
 ############################################################
 install_packages_if <- function(package_name, lib_path) {
+  .libPaths(c(.libPaths(), temp <- tempdir()))
+  
   # check if package is installed
   if ( !package_name %in% rownames(installed.packages()) ) {
 
