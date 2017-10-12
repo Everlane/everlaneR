@@ -14,3 +14,4 @@ Encoding: UTF-8
 LazyData: true
 Imports:
     dplyr
+    aws.s3
