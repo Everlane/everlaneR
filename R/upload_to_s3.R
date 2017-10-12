@@ -1,6 +1,6 @@
 # Purpose: To easily upload files to S3. Objects to call within function are working file name and object name. File and object name are usually the same input but in the event that the user wants them to be different, both inputs must be made in the function.
 # Note: You must set your working directory before you run this function. File and object name must have entire pathway name
-upload_to_s3 <- function(file_name, object_name) {
+upload_to_s3 <- function(file_name, object_name, bucket_name = "everlane-data") {
 
 # Install package dependency
   require(aws.s3)
@@ -13,7 +13,7 @@ upload_to_s3 <- function(file_name, object_name) {
     put_object(
       file = file_name,
       object = object_name,
-      bucket = "everlane-data",
+      bucket = bucket_name,
       key = aws_creds['aws_access_key_id'],
       secret = aws_creds['aws_secret_access_key']
     )},
@@ -21,7 +21,7 @@ upload_to_s3 <- function(file_name, object_name) {
       list(put_object(
         file = file_name,
         object = object_name,
-        bucket = "everlane-data",
+        bucket = bucket_name,
         key = aws_creds['aws_access_key_id'],
         secret = aws_creds['aws_secret_access_key']
       ), print(x))
@@ -30,7 +30,7 @@ upload_to_s3 <- function(file_name, object_name) {
       list(put_object(
         file = file_name,
         object = object_name,
-        bucket = "everlane-data",
+        bucket = bucket_name,
         key = aws_creds['aws_access_key_id'],
         secret = aws_creds['aws_secret_access_key']
       ), print(x))
