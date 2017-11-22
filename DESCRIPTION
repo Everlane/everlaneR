@@ -14,4 +14,5 @@ Encoding: UTF-8
 LazyData: true
 Imports:
     dplyr,
-    aws.s3
+    aws.s3,
+    RPostgreSQL
