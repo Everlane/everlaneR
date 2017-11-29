@@ -112,11 +112,7 @@
     # Install package dependency
     require(RPostgreSQL)
 
-<<<<<<< HEAD
     # Upload new email lookup table to S3
-=======
-    # Upload new email lookup table to S3che
->>>>>>> 7fb665e6f595ad09217ab2ebdb88888390d50ee4
     query <- ifelse(condition == "", paste("TRUNCATE", table_name, ";"),
                     paste("DELETE FROM", table_name, "WHERE", condition, ";"))
     dbSendQuery(connection,query)
@@ -140,8 +136,7 @@
   }
 
 #############################################################################################################################
-<<<<<<< HEAD
-=======
+
 # GENERATE CREATE TABLE DDL FROM A DATAFRAME
 
   # purpose is to quickly copy a dataframe into redshift
@@ -177,4 +172,4 @@
 
     return(create_table_sql)
   }
->>>>>>> 7fb665e6f595ad09217ab2ebdb88888390d50ee4
+
