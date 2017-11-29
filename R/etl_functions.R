@@ -112,7 +112,11 @@
     # Install package dependency
     require(RPostgreSQL)
 
+<<<<<<< HEAD
     # Upload new email lookup table to S3
+=======
+    # Upload new email lookup table to S3che
+>>>>>>> 7fb665e6f595ad09217ab2ebdb88888390d50ee4
     query <- ifelse(condition == "", paste("TRUNCATE", table_name, ";"),
                     paste("DELETE FROM", table_name, "WHERE", condition, ";"))
     dbSendQuery(connection,query)
@@ -136,3 +140,41 @@
   }
 
 #############################################################################################################################
+<<<<<<< HEAD
+=======
+# GENERATE CREATE TABLE DDL FROM A DATAFRAME
+
+  # purpose is to quickly copy a dataframe into redshift
+  generate_create_table_sql <- function(table_name, df) {
+    col_classes <- map_chr(df, class) # grab column classes
+    max_char <- map_chr(df, function(x) { max(nchar(x), na.rm = TRUE) }) # grab max characters for each column
+
+    # create dataframe with column metadata
+    col_specification <- cbind.data.frame(col_classes, max_char)
+    col_specification$column_name <- row.names(col_specification)
+
+    col_specification <- col_specification %>%
+
+      # conversion from factors
+      mutate(col_classes = as.character(col_classes),
+             max_char = as.integer(as.character(max_char))) %>%
+
+      # for character columns, replace with varchar + the max_char + a 100 character buffer
+      # for logical, use boolean
+      # otherwise paste column name with the column class
+      mutate(def = paste0(column_name, " ",
+                          ifelse(col_classes == "character",
+                                 paste0("varchar(",max_char + 100,")"),
+                                 ifelse(col_classes == "logical",
+                                        "boolean",
+                                        col_classes)
+                          ),
+                          " \n")
+      )
+
+    # delimit with commas
+    create_table_sql <- paste0("create table ",table_name , "(", paste0(col_specification$def, collapse = ","), ")")
+
+    return(create_table_sql)
+  }
+>>>>>>> 7fb665e6f595ad09217ab2ebdb88888390d50ee4

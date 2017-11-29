@@ -71,3 +71,35 @@
     )
 
   }
+
+# construct function that grabs credentials from any api -- api creds must always have api name in front of credentials
+#############################################################################
+
+  get_credentials <- function(api) {
+    # reads keys from credentials file in the ~/.aws/ folder (requires user to have aws cli installed)
+    creds_file = file(paste0(Sys.getenv("HOME"),'/.aws/','env.txt'), "r")
+
+    # initialize empty list to store aws credentials
+    creds <- list()
+
+    # read in list of credentials
+    while (TRUE) {
+      # loop through lines in credentials files
+      line = readLines(creds_file, n = 1, warn = FALSE)
+      if ( length(line) == 0 ) {
+        break # break loop if line is empty
+      }
+      line <- gsub("\n", "", gsub(" ", "", line)) # basic scrubbing of newline character and empty spaces
+
+      line <- line[grepl(api, line, ignore.case = TRUE, fixed = FALSE)] # filter out api
+
+      # create key-value element in list for credential in current line
+      # key is character before '=', value is character after '='
+      creds[[substr(line, 1, regexpr('=', line)[1]- 1)]] <- substr(line, regexpr('=', line)[1] + 1, nchar(line))
+    }
+    close(creds_file)
+    return(creds)
+  }
+
+
+
