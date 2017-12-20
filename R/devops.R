@@ -91,7 +91,9 @@
       }
       line <- gsub("\n", "", gsub(" ", "", line)) # basic scrubbing of newline character and empty spaces
 
-      line <- line[grepl(api, line, ignore.case = TRUE, fixed = FALSE)] # filter out api
+      if (!grepl(api, line)) {
+        next
+      }
 
       # create key-value element in list for credential in current line
       # key is character before '=', value is character after '='
