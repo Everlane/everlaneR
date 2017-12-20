@@ -77,7 +77,7 @@
 
   get_credentials <- function(api) {
     # reads keys from credentials file in the ~/.aws/ folder (requires user to have aws cli installed)
-    creds_file = file(paste0(Sys.getenv("HOME"),'/.aws/','env.txt'), "r")
+    creds_file = file(paste0(Sys.getenv("HOME"),'/.aws/','env'), "r")
 
     # initialize empty list to store aws credentials
     creds <- list()
