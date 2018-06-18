@@ -71,7 +71,22 @@
     )
 
   }
-
+  
+# disconnect all connections to Redshift
+############################################################################
+  dbDisconnectAll <- function() {
+    all_cons <- dbListConnections(PostgreSQL())
+    
+    for (con in all_cons) {
+      if (length(dbListResults(con)) > 0) {
+        dbClearResult(dbListResults(con)[[1]])
+      }
+      dbDisconnect(con)
+    }
+    
+    message("All connections disconnected.")
+  }
+  
 # construct function that grabs credentials from any api -- api creds must always have api name in front of credentials
 #############################################################################
 
