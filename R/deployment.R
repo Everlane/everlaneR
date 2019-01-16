@@ -34,8 +34,8 @@ get_pipeline_input <- function(model_name, version, input_name, run_time=NULL) {
   else if (is.Date(run_time)) {
     run <-
       data.frame(items) %>% 
-      filer(grepl(input_name, Key) & grepl(runtime, Key)) %>%
-      arrange(des(LastModified))
+      filter(grepl(input_name, Key) & grepl(runtime, Key)) %>%
+      arrange(desc(LastModified))
     
     file_name <- latest_run[1, "Key"]
   }
@@ -43,7 +43,7 @@ get_pipeline_input <- function(model_name, version, input_name, run_time=NULL) {
     time_split <- strsplit(as.character(run_time), " ")
     
     if (length(time_split) > 1) {
-      stop("Argument run_time has more than one elemen.")
+      stop("Argument run_time has more than one element.")
     }
     
     time_split <- time_split[[1]]
@@ -71,11 +71,11 @@ get_pipeline_input <- function(model_name, version, input_name, run_time=NULL) {
     
     run <-
       data.frame(items) %>% 
-      filer(grepl(input_name, Key)) %>%
+      filter(grepl(input_name, Key)) %>%
       filter(
         map(strsplit(key, "/"), function(x) {return(x[3])}) == run_time_string
       ) %>%
-      arrange(des(LastModified))
+      arrange(desc(LastModified))
     
     file_name <- latest_run[1, "Key"]
   }
