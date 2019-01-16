@@ -12,9 +12,16 @@
 #' create_pipeline_output(training_data_finel,"activation_curves", "train_dataprep", 2, "rds")
 create_pipeline_output <- function(output_object, model_name, component, version, type) {
   
-  local_file_path <- tempfile(fileext = ".rds")
+  local_file_path <- tempfile(fileext = paste0(".", type))
   
-  saveRDS(output_object, local_file_path)
+  
+  if (type == "rds") {
+    saveRDS(output_object, local_file_path)  
+  } 
+  else if (type == "txt") {
+    write.table(output_object, local_file_path, row.names = FALSE, sep = "\t", fileEncoding = "UTF-8", quote = FALSE)
+  }
+  
   s3_path <- paste(model_name, component, version, gsub(" ", "_", gsub(":", "", Sys.time())), sep = "/")
   file_name <- paste0(component, ".", type)
   
@@ -22,6 +29,7 @@ create_pipeline_output <- function(output_object, model_name, component, version
   message("Output for ", component, " component of ", model_name, " model create at s3 location ", paste(s3_path, file_name, sep ="/"))
   file.remove(local_file_path)
   
+  return(paste(s3_path, file_name, sep = "/"))
 }
 
 #' Read inputs in a data pipeline.
