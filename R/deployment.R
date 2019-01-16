@@ -1,3 +1,29 @@
+#' Put output of data pipeline step onto s3
+#' 
+#' Properly version and timestamp output of a datapipeline step with associated metadata.  Output needs to exist on local machine.
+#' 
+#' @param output_object R object representing output of pipeline step.
+#' @param model_name Name of the model/pipeline.
+#' @param component Name of pipeline step.
+#' @param version Version of input.
+#' @param type File type of output. (i.e. "rds", "txt", "csv")
+#' 
+#' @examples 
+#' create_pipeline_output(training_data_finel,"activation_curves", "train_dataprep", 2, "rds")
+create_pipeline_output <- function(output_object, model_name, component, version, type) {
+  
+  local_file_path <- tempfile(fileext = ".rds")
+  
+  saveRDS(output_object, local_file_path)
+  s3_path <- paste(model_name, component, version, gsub(" ", "_", gsub(":", "", Sys.time())), sep = "/")
+  file_name <- paste0(component, ".", type)
+  
+  upload_to_s3(local_file_path, paste(s3_path, file_name, sep = "/"), bucket_name = "everlane-data-deploy")
+  message("Output for ", component, " component of ", model_name, " model create at s3 location ", paste(s3_path, file_name, sep ="/"))
+  file.remove(local_file_path)
+  
+}
+
 #' Read inputs in a data pipeline.
 #' 
 #' Get the correct version and run of a previous step (called input) in an Everlane data pipeline.
@@ -9,17 +35,19 @@
 #' 
 #' @examples 
 #' get_pipeline_input("ops_forecasts_returned_units", 2, "train_dataprep.rds")
-get_pipeline_input <- function(model_name, version, input_name, run_time=NULL) {
+get_pipeline_input <- function(model_name, component, version, type, run_time=NULL) {
   require(aws.s3)
   require(lubridate)
   aws_creds <- get_aws_credentials()
+  
+  input_name <- paste0(component, ".", type)
   
   items <- 
     get_bucket(
       bucket = 'everlane-data-deploy',  
       key = aws_creds[["aws_access_key_id"]],
       secret = aws_creds[["aws_secret_access_key"]],
-      prefix = paste0(model_name, "/", version, "/"),
+      prefix = paste(model_name, component, version, "",sep = "/"),
       max = Inf
     )
   
@@ -29,7 +57,7 @@ get_pipeline_input <- function(model_name, version, input_name, run_time=NULL) {
       arrange(desc(LastModified)) %>%
       filter(grepl(input_name, Key))
     
-    file_name <- latest_run[1, "Key"]
+    file_name <- run[1, "Key"]
   }
   else if (is.Date(run_time)) {
     run <-
@@ -37,7 +65,7 @@ get_pipeline_input <- function(model_name, version, input_name, run_time=NULL) {
       filter(grepl(input_name, Key) & grepl(runtime, Key)) %>%
       arrange(desc(LastModified))
     
-    file_name <- latest_run[1, "Key"]
+    file_name <- run[1, "Key"]
   }
   else {
     time_split <- strsplit(as.character(run_time), " ")
@@ -77,7 +105,7 @@ get_pipeline_input <- function(model_name, version, input_name, run_time=NULL) {
       ) %>%
       arrange(desc(LastModified))
     
-    file_name <- latest_run[1, "Key"]
+    file_name <- run[1, "Key"]
   }
   
   input_data <- 
