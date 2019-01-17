@@ -7,9 +7,10 @@
 #' @param component Name of pipeline step.
 #' @param version Version of input.
 #' @param type File type of output. (i.e. "rds", "txt", "csv")
+#' @return string with s3 file path
 #' 
 #' @examples 
-#' create_pipeline_output(training_data_finel,"activation_curves", "train_dataprep", 2, "rds")
+#' create_pipeline_output(training_data_final,"activation_curves", "train_dataprep", 2, "rds")
 create_pipeline_output <- function(output_object, model_name, component, version, type) {
   
   local_file_path <- tempfile(fileext = paste0(".", type))
@@ -40,6 +41,7 @@ create_pipeline_output <- function(output_object, model_name, component, version
 #' @param version Version of input.
 #' @param input_name File name of input.
 #' @param run_time Created timestamp of input.  Defaults to latest run.  If date over timestamp is provided, will look for latest run on that day.
+#' @return R object (likely a list or dataframe)
 #' 
 #' @examples 
 #' get_pipeline_input("ops_forecasts_returned_units", 2, "train_dataprep.rds")
