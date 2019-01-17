@@ -116,13 +116,28 @@ get_pipeline_input <- function(model_name, component, version, type, run_time=NU
     file_name <- run[1, "Key"]
   }
   
-  input_data <- 
-    s3readRDS(
-      object = file_name,
-      bucket = 'everlane-data-deploy',
-      key = aws_creds[["aws_access_key_id"]],
-      secret = aws_creds[["aws_secret_access_key"]]
-    )
+  if (type == "rds") {
+    input_data <- 
+      s3readRDS(
+        object = file_name,
+        bucket = 'everlane-data-deploy',
+        key = aws_creds[["aws_access_key_id"]],
+        secret = aws_creds[["aws_secret_access_key"]]
+      )  
+  }
+  else if (type == "txt") {
+    input_data <- 
+      read_tsv(
+        rawToChar(
+          get_object(
+            file_name, 
+            "everlane-data-deploy", 
+            key = aws_creds[["aws_access_key_id"]],
+            secret = aws_creds[["aws_secret_access_key"]]
+          )
+        )
+      )
+  }
   
   return(input_data)
 }
