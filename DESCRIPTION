@@ -16,4 +16,4 @@ Imports:
     dplyr,
     aws.s3,
     RPostgreSQL
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1

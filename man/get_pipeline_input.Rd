@@ -4,16 +4,19 @@
 \alias{get_pipeline_input}
 \title{Read inputs in a data pipeline.}
 \usage{
-get_pipeline_input(model_name, version, input_name, run_time = NULL)
+get_pipeline_input(model_name, component, version, type, run_time = NULL)
 }
 \arguments{
 \item{model_name}{Name of the model/pipeline.}
 
 \item{version}{Version of input.}
 
-\item{input_name}{File name of input.}
-
 \item{run_time}{Created timestamp of input.  Defaults to latest run.  If date over timestamp is provided, will look for latest run on that day.}
+
+\item{input_name}{File name of input.}
+}
+\value{
+R object (likely a list or dataframe)
 }
 \description{
 Get the correct version and run of a previous step (called input) in an Everlane data pipeline.
