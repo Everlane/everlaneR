@@ -22,8 +22,14 @@
 #' )
 get_aws_credentials <- function() {
   # reads keys from credentials file in the ~/.aws/ folder (requires user to have aws cli installed)
-  aws_creds_file = file(paste0(Sys.getenv("HOME"),'/.aws/','credentials'), "r")
-
+  aws_creds_file = 
+    tryCatch({
+      file(paste0(Sys.getenv("HOME"),'/.aws/','credentials'), "r")
+    }, warning = function(w) {
+      file(paste0("./Data/",'credentials'), "r")
+    }, error = function(e) {
+      file(paste0("./Data/",'credentials'), "r")
+    }
   # initialize empty list to store aws credentials
   aws_creds <- list()
 
@@ -60,7 +66,14 @@ get_aws_credentials <- function() {
 #'           port = connection_details['port'])
 get_redshift_credentials <- function() {
   # reads keys from redshift file in the ~/.aws/ folder (requires user to have aws cli installed)
-  redshift_creds_file = file(paste0(Sys.getenv("HOME"),'/.aws/','redshift'), "r")
+  redshift_creds_file = 
+    tryCatch({
+      file(paste0(Sys.getenv("HOME"),'/.aws/','redshift'), "r")
+    }, warning = function(w) {
+      file(paste0("./Data/",'redshift'), "r")
+    }, error = function(e) {
+      file(paste0("./Data/",'redshift'), "r")
+    }  
   redshift_creds <- list()
 
   # loop through lines in credentials files
