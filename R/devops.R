@@ -29,7 +29,7 @@ get_aws_credentials <- function() {
       file(paste0("./Data/",'credentials'), "r")
     }, error = function(e) {
       file(paste0("./Data/",'credentials'), "r")
-    }
+    })
   # initialize empty list to store aws credentials
   aws_creds <- list()
 
@@ -73,7 +73,7 @@ get_redshift_credentials <- function() {
       file(paste0("./Data/",'redshift'), "r")
     }, error = function(e) {
       file(paste0("./Data/",'redshift'), "r")
-    }  
+    })  
   redshift_creds <- list()
 
   # loop through lines in credentials files
