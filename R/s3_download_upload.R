@@ -42,22 +42,30 @@ send_output_to_s3 <- function(object,
 
 # Download data from S3 -------------------------
 get_input_from_s3 <- function(repo = "data-models", 
-                              prefix = prefix,
-                              project = project,
-                              stage = stage, 
+                              prefix = NULL,
+                              project = NULL,
+                              stage = NULL, 
                               method = "",
-                              version = version) {
+                              version = NULL,
+                              full_path = NULL) {
   require(everlaneR)
   require(aws.s3)
   
   aws_creds <- get_aws_credentials()
   
+  if(!is.null(full_path)) {
+    prefix <- full_path
+  } else if (method != "") {
+    prefix <- paste(repo, prefix, project, stage, method, version, sep = "/")
+  } else {
+    prefix <- paste(repo, prefix, project, stage, version, sep = "/")
+  }
+  print(prefix)
   # Grab all items stored in the same S3 folder
   items <- get_bucket(bucket = 'everlane-data',  
                       key = aws_creds[["aws_access_key_id"]],
                       secret = aws_creds[["aws_secret_access_key"]],
-                      prefix = ifelse(method != "", paste(repo, prefix, project, stage, method, version, sep = "/"),
-                                      paste(repo, prefix, project, stage, version, sep = "/")))
+                      prefix = prefix)
   
   # Arrange by the most recently modified data
   latest_run <- data.frame(items) %>% 
