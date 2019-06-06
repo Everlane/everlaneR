@@ -60,7 +60,7 @@ upload_to_s3 <- function(file_path, object_name, bucket_name = "everlane-data") 
 #cleanup = TRUE will delete the local_output_dir after upload.
 #upload_partitioned_dataframe_to_s3(df, "local/output/dir", "s3/output/dir", filetype="txt", num_partition=4, cleanup = TRUE)
 
-upload_partitioned_dataframe_to_s3 <- function(df, local_output_dir, s3_output_dir, filetype, num_partition, cleanup=FALSE) {
+upload_partitioned_dataframe_to_s3 <- function(df, local_output_dir, s3_output_dir, filetype, num_partition) {
   num_rows <- nrow(df)
   partition_size <- ceiling(num_rows/num_partition)
   partitions <- list()
@@ -71,7 +71,7 @@ upload_partitioned_dataframe_to_s3 <- function(df, local_output_dir, s3_output_d
     partition_end_index <- partition_size * p
     partition <- df[partition_start_index:partition_end_index, ]
     local_output_path <- paste0(local_output_dir, "/part", p, ".", filetype)
-    print(local_output_path)
+    message(paste0("Writing partition ", p, " to local path ", local_output_path))
     if (filetype == "txt") {
       write.table(partition, local_output_path, row.names = FALSE, sep = "\t", fileEncoding = "UTF-8", quote = FALSE)
     } else if (filetype == "rds") {
@@ -79,11 +79,10 @@ upload_partitioned_dataframe_to_s3 <- function(df, local_output_dir, s3_output_d
     } else {
       stop("Unsupported file type. Possible values: txt, rds.")
     }
-    upload_to_s3(local_output_path, paste0(s3_output_path, "/part", p, ".", filetype))
-  }
-  
-  if(cleanup) {
-    unlink(local_output_dir, recursive = TRUE)
+    message(paste0("Uploading partition ", p, " to s3 path ", s3_output_dir))
+    upload_to_s3(local_output_path, paste0(s3_output_dir, "/part", p, ".", filetype))
+    message(paste0("Deleting local partition ", p))
+    file.remove(local_output_path)
   }
 }
 
