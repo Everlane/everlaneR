@@ -13,7 +13,6 @@ License: What license is it under?
 Encoding: UTF-8
 LazyData: true
 Imports:
-    dplyr,
     aws.s3,
     RPostgreSQL
 RoxygenNote: 6.1.1
