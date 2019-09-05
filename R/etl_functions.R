@@ -60,7 +60,11 @@ upload_to_s3 <- function(file_path, object_name, bucket_name = "everlane-data") 
 #cleanup = TRUE will delete the local_output_dir after upload.
 #upload_partitioned_dataframe_to_s3(df, "local/output/dir", "s3/output/dir", filetype="txt", num_partition=4, cleanup = TRUE)
 
-upload_partitioned_dataframe_to_s3 <- function(df, local_output_dir, s3_output_dir, filetype, num_partition) {
+upload_partitioned_dataframe_to_s3 <- function(df, local_output_dir, s3_output_dir, filetype, num_partition = NULL) {
+  if(is_null(num_partition)) {
+    num_partition = ceiling(object.size(df),units="Gb")
+  }
+  
   num_rows <- nrow(df)
   partition_size <- ceiling(num_rows/num_partition)
   partitions <- list()
