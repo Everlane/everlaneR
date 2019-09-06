@@ -14,7 +14,7 @@
 #' 
 #' @examples 
 #' upload_to_s3("local_file.txt","s3_file_path.txt", bucket_name = "everlane-data")
-upload_to_s3 <- function(file_path, object_name, bucket_name = "everlane-data") {
+upload_to_s3 <- function(file_path, object_name, multipart = TRUE, bucket_name = "everlane-data") {
 
 # Install package dependency
   require(aws.s3)
@@ -29,7 +29,8 @@ upload_to_s3 <- function(file_path, object_name, bucket_name = "everlane-data") 
       object = object_name,
       bucket = bucket_name,
       key = aws_creds['aws_access_key_id'],
-      secret = aws_creds['aws_secret_access_key']
+      secret = aws_creds['aws_secret_access_key'],
+      multipart = multipart
     )},
     warning = function(x) { return(
       list(put_object(
@@ -37,7 +38,8 @@ upload_to_s3 <- function(file_path, object_name, bucket_name = "everlane-data") 
         object = object_name,
         bucket = bucket_name,
         key = aws_creds['aws_access_key_id'],
-        secret = aws_creds['aws_secret_access_key']
+        secret = aws_creds['aws_secret_access_key'],
+        multipart = multipart
       ), print(x))
     )},
     error = function(x) { return(
@@ -46,7 +48,8 @@ upload_to_s3 <- function(file_path, object_name, bucket_name = "everlane-data") 
         object = object_name,
         bucket = bucket_name,
         key = aws_creds['aws_access_key_id'],
-        secret = aws_creds['aws_secret_access_key']
+        secret = aws_creds['aws_secret_access_key'],
+        multipart = multipart
       ), print(x))
     )}
   )
