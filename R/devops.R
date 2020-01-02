@@ -64,11 +64,15 @@ get_aws_credentials <- function() {
 #'           user = connection_details['user'],
 #'           password = connection_details['password'],
 #'           port = connection_details['port'])
-get_redshift_credentials <- function() {
+get_redshift_credentials <- function(environment="prd") {
   # reads keys from redshift file in the ~/.aws/ folder (requires user to have aws cli installed)
   redshift_creds_file = 
     tryCatch({
-      file(paste0(Sys.getenv("HOME"),'/.aws/','redshift'), "r")
+       if (environment == 'prd'){
+        redshift_creds_file <- file(paste0(Sys.getenv("HOME"),'/.aws/','redshift'), "r")
+      }else if (environment == 'test_kitchen') {
+        redshift_creds_file <- file(paste0(Sys.getenv("HOME"),'/.aws/','redshift_test_kitchen'), "r")
+      }
     }, warning = function(w) {
       file(paste0("./Data/",'redshift'), "r")
     }, error = function(e) {
@@ -98,10 +102,10 @@ get_redshift_credentials <- function() {
 #'
 #' @examples
 #' redshift_conn <- create_redshift_con()
-create_redshift_con <- function() {
+create_redshift_con <- function(environment="prd") {
   require(RPostgreSQL)
   drv <- dbDriver("PostgreSQL")
-  connection_details <- get_redshift_credentials() # create list containing redshift credentials
+  connection_details <- get_redshift_credentials(environment) # create list containing redshift credentials
 
   # connect to redshift using the dbConnect function from the RPostgreSQL package
   return(
