@@ -70,7 +70,7 @@ upload_partitioned_dataframe_to_s3 <- function(df, local_output_dir, s3_output_d
     partition_start_index <- (p-1)*partition_size +1
     partition_end_index <- partition_size * p
     partition <- df[partition_start_index:partition_end_index, ]
-    local_output_path <- paste0(local_output_dir, "/part", p, ".", filetype)
+    local_output_path <- paste0(local_output_dir, "part", p, ".", filetype)
     message(paste0("Writing partition ", p, " to local path ", local_output_path))
     if (filetype == "txt") {
       write.table(partition, local_output_path, row.names = FALSE, sep = "\t", fileEncoding = "UTF-8", quote = FALSE)
