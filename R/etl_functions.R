@@ -28,16 +28,16 @@ upload_to_s3 <- function(file_path, object_name, bucket_name = "everlane-data") 
       file = file_path,
       object = object_name,
       bucket = bucket_name,
-      key = aws_creds['aws_access_key_id'],
-      secret = aws_creds['aws_secret_access_key']
+      key = aws_creds['s3_aws_access_key_id'],
+      secret = aws_creds['s3_aws_secret_access_key']
     )},
     warning = function(x) { return(
       list(put_object(
         file = file_path,
         object = object_name,
         bucket = bucket_name,
-        key = aws_creds['aws_access_key_id'],
-        secret = aws_creds['aws_secret_access_key']
+        key = aws_creds['s3_aws_access_key_id'],
+        secret = aws_creds['s3_aws_secret_access_key']
       ), print(x))
     )},
     error = function(x) { return(
@@ -45,8 +45,8 @@ upload_to_s3 <- function(file_path, object_name, bucket_name = "everlane-data") 
         file = file_path,
         object = object_name,
         bucket = bucket_name,
-        key = aws_creds['aws_access_key_id'],
-        secret = aws_creds['aws_secret_access_key']
+        key = aws_creds['s3_aws_access_key_id'],
+        secret = aws_creds['s3_aws_secret_access_key']
       ), print(x))
     )}
   )
@@ -111,8 +111,8 @@ copy_s3_to_redshift <- function(connection, object_name, object_type = ".csv", t
   
   # Upload new email lookup table to S3
   query <- paste0("COPY ", table_name, " from 's3://", paste(c(bucket_name, object_name), collapse = "/"), "'
-                  credentials 'aws_access_key_id=", aws_creds['aws_access_key_id'],";aws_secret_access_key=",
-                  aws_creds['aws_secret_access_key'], "'
+                  credentials 'aws_access_key_id=", aws_creds['s3_aws_access_key_id'],";aws_secret_access_key=",
+                  aws_creds['s3_aws_secret_access_key'], "'
                   IGNOREHEADER 1
                   ACCEPTINVCHARS
                   REMOVEQUOTES

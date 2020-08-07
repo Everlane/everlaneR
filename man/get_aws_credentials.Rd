@@ -16,8 +16,8 @@ Read AWS credentials from local ~/.aws/ directory and store as list. Requires a 
 creds <- get_aws_credentials()
 get_bucket(
   bucket = 'everlane-data-deploy',
-  key = aws_creds[["aws_access_key_id"]],
-  secret = aws_creds[["aws_secret_access_key"]],
+  key = aws_creds[["s3_aws_access_key_id"]],
+  secret = aws_creds[["s3_aws_secret_access_key"]],
   prefix = paste(model_name, component, version, "",sep = "/"),
   max = Inf
 )
