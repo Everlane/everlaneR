@@ -33,11 +33,12 @@ get_aws_credentials <- function() {
   # initialize empty list to store aws credentials
   aws_creds <- list()
 
+  i = 0
   # read in list of credentials
   while (TRUE) {
     # loop through lines in credentials files
     line = readLines(aws_creds_file, n = 1, warn = FALSE)
-    if ( length(line) == 0 ) {
+    if ( (length(line) == 0 ) | (i==3)) {
       break # break loop if line is empty
     }
     line <- gsub("\n", "", gsub(" ", "", line)) # basic scrubbing of newline character and empty spaces
