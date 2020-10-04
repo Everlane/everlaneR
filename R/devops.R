@@ -46,6 +46,7 @@ get_aws_credentials <- function() {
     # create key-value element in list for credential in current line
     # key is character before '=', value is character after '='
     aws_creds[[substr(line, 1, regexpr('=', line)[1]- 1)]] <- substr(line, regexpr('=', line)[1] + 1, nchar(line))
+    i = i+1
   }
   close(aws_creds_file)
   return(aws_creds)
